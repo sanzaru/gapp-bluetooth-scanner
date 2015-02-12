@@ -1,0 +1,16 @@
+{
+  "name": "Bluetooth Scanner",
+  "description": "Simple scanner for bluetooth devices nearby.",
+  "version": "0.1",
+  "manifest_version": 2,
+  "app": {
+    "background": {
+      "scripts": ["background.js"]
+    }
+  },
+  "bluetooth": {},
+  "icons": {
+    "16": "Bluetooth-Icon-16.png",
+    "48": "Bluetooth-Icon-48.png",
+    "128": "Bluetooth-Icon-128.png" }
+}
