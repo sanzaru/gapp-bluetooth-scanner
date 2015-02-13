@@ -1,3 +1,9 @@
+/*
+ * Main controller for the bluetooth scanner app
+ *
+ * @author Martin Albrecht <martin.albrecht@javacoffee.de>
+ * @version 0.0.1
+ */
 var myApp = angular.module('myApp', []);
 
 myApp.controller('MainCtrl', ['$scope', function($scope) {
@@ -12,13 +18,26 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
     "Joystick", "Gamepad", "Keyboard", "Mouse", "Tablet", "Keyboard Mouse Combo"
   ];
 
-  
+
+  /**
+   * Set the current bluetooth adapter
+   * 
+   * @param {Object}
+   * @return {undefined} 
+   */ 
   $scope.setAdapter = function(adapter) {
     $scope.$apply(function() {
       $scope.adapter = adapter;
     });
   };
 
+
+  /**
+   * Start device discovery for a optional specified amount of time
+   * 
+   * @param {int}
+   * @return {undefined}
+   */
   $scope.startDiscovery = function(timeout) {
     $scope.deviceList = [];
     $scope.showDeviceList = true;
@@ -52,6 +71,12 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
     }
   };
   
+
+  /**
+   * Stop device discovery
+   *
+   * @return {undefined}
+   */
   $scope.stopDiscovery= function() {
     chrome.bluetooth.stopDiscovery();
     $scope.deviceScan = false;
@@ -60,6 +85,13 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
     }
   }
   
+
+  /**
+   * Add a device to the device list (newly discovered and old ones)
+   *
+   * @param {Object}
+   * @return {undefined}
+   */
   $scope.addDevice = function(device) {
     console.log(device);
     
@@ -70,6 +102,13 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
     });
   };
   
+
+  /**
+   * Fetch all already known devices
+   *
+   * @param {function}
+   * @return {undefined}
+   */
   chrome.bluetooth.getDevices(function(devices) {
     for(var i=0, len=devices.length; i<len; i++) {
       devices[i].old = "Yes";
@@ -77,14 +116,35 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
     }
   });
   
+
+  /**
+   * Get the adapter state
+   *
+   * @param {function}
+   * @return {undefined}
+   */
   chrome.bluetooth.getAdapterState(function(adapter) {
     console.log("Adapter " + adapter.address + ": " + adapter.name);
     $scope.setAdapter(adapter);
   });
   
+
+  /**
+   * Callback if adapter state changed
+   *
+   * @param {function}
+   * @return {undefined}
+   */
   chrome.bluetooth.onAdapterStateChanged.addListener(function(adapter) {
     $scope.setAdapter(adapter);
   });
   
+
+  /**
+   * Callback if a device is added
+   *
+   * @param {function}
+   * @return {undefined}
+   */
   chrome.bluetooth.onDeviceAdded.addListener($scope.addDevice);
 }]);
