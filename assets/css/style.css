@@ -1,3 +1,11 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  overflow-y: auto;
+}
+
 .progress {
   margin-bottom: 20px;
 }
