@@ -1,5 +1,6 @@
 html, body {
   height: 100%;
+  -webkit-user-select: text;
 }
 
 body {
@@ -8,6 +9,11 @@ body {
 
 .progress {
   margin-bottom: 20px;
+}
+
+.tip {
+  vertical-align: text-top;
+  color: lightblue;
 }
 
 #deviceContainer {

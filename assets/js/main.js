@@ -4,21 +4,33 @@
  * @author Martin Albrecht <martin.albrecht@javacoffee.de>
  * @version 0.0.1
  */
-var myApp = angular.module('myApp', []);
 
-myApp.controller('MainCtrl', ['$scope', function($scope) {
+angular.module('btScanner', [])
+.filter('ucfirst', function() {
+  return function(input) {
+    console.log("Here!", input);
+    if( input !== null ) {
+      return input.charAt(0).toUpperCase() + input.slice(1);
+    }
+  }
+})
+.controller('MainCtrl', ['$scope', function($scope) {
   $scope.status = false;
   $scope.adapter = null;
   $scope.showDeviceList = false;
   $scope.deviceScan = false;
   $scope.deviceList = [];
   $scope.timeout = 20;
-  $scope.deviceTypes = [
-    "Computer", "Phone", "Modem", "Audio", "Car audio", "Video", "Peripheral",
-    "Joystick", "Gamepad", "Keyboard", "Mouse", "Tablet", "Keyboard Mouse Combo"
-  ];
-
-
+  
+  
+  /**
+   * Initialize tooltips
+   */
+  $scope.initTooltips = function() {
+    $('[data-toggle="tooltip"]').tooltip();
+  }
+  
+  
   /**
    * Set the current bluetooth adapter
    *
@@ -46,7 +58,7 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
     chrome.bluetooth.startDiscovery();
     chrome.bluetooth.getDevices(function(devices) {
       for(var i=0, len=devices.length; i<len; i++) {
-        devices[i].old = "Yes";
+        devices[i].old = true;
         $scope.addDevice(devices[i]);
       }
     });
@@ -94,9 +106,9 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
    */
   $scope.addDevice = function(device) {
     console.log(device);
-
-    if( !device.old ) device.old = "No";
-
+    
+    if( !device.old ) device.old = false;
+    
     $scope.$apply(function() {
       $scope.deviceList.push(device);
     });
@@ -111,7 +123,7 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
    */
   chrome.bluetooth.getDevices(function(devices) {
     for(var i=0, len=devices.length; i<len; i++) {
-      devices[i].old = "Yes";
+      devices[i].old = true;
       $scope.addDevice(devices[i]);
     }
   });
