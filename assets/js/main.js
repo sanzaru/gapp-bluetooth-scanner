@@ -21,10 +21,10 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
 
   /**
    * Set the current bluetooth adapter
-   * 
+   *
    * @param {Object}
-   * @return {undefined} 
-   */ 
+   * @return {undefined}
+   */
   $scope.setAdapter = function(adapter) {
     $scope.$apply(function() {
       $scope.adapter = adapter;
@@ -34,7 +34,7 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
 
   /**
    * Start device discovery for a optional specified amount of time
-   * 
+   *
    * @param {int}
    * @return {undefined}
    */
@@ -50,27 +50,27 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
         $scope.addDevice(devices[i]);
       }
     });
-    
-    var tm = parseInt(timeout)*1000 || 0;
-    
+
+    var tm = parseInt(timeout, 10)*1000 || 0;
+
     if( tm > 0 ) {
       $scope.scanProgress = 0;
       window.setTimeout($scope.stopDiscovery, tm);
-      
+
       $scope.progressInterval = window.setInterval(function() {
         var progressBar = document.getElementById('scanProgress');
         $scope.$apply(function() {
           $scope.scanProgress++;
         });
-        
-        $scope.percentDone = parseInt(($scope.scanProgress / timeout) * 100);
-        
+
+        $scope.percentDone = parseInt(($scope.scanProgress / timeout) * 100, 10);
+
         progressBar.setAttribute('aria-valuenow', $scope.scanProgress);
-        progressBar.style.width = $scope.percentDone + '%'
+        progressBar.style.width = $scope.percentDone + '%';
       }, 1000);
     }
   };
-  
+
 
   /**
    * Stop device discovery
@@ -83,8 +83,8 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
     if( $scope.progressInterval ) {
       window.clearInterval($scope.progressInterval);
     }
-  }
-  
+  };
+
 
   /**
    * Add a device to the device list (newly discovered and old ones)
@@ -94,14 +94,14 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
    */
   $scope.addDevice = function(device) {
     console.log(device);
-    
+
     if( !device.old ) device.old = "No";
-    
+
     $scope.$apply(function() {
       $scope.deviceList.push(device);
     });
   };
-  
+
 
   /**
    * Fetch all already known devices
@@ -115,7 +115,7 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
       $scope.addDevice(devices[i]);
     }
   });
-  
+
 
   /**
    * Get the adapter state
@@ -127,7 +127,7 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
     console.log("Adapter " + adapter.address + ": " + adapter.name);
     $scope.setAdapter(adapter);
   });
-  
+
 
   /**
    * Callback if adapter state changed
@@ -138,7 +138,7 @@ myApp.controller('MainCtrl', ['$scope', function($scope) {
   chrome.bluetooth.onAdapterStateChanged.addListener(function(adapter) {
     $scope.setAdapter(adapter);
   });
-  
+
 
   /**
    * Callback if a device is added
