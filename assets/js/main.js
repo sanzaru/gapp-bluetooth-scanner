@@ -8,11 +8,10 @@
 angular.module('btScanner', [])
 .filter('ucfirst', function() {
   return function(input) {
-    console.log("Here!", input);
     if( input !== null ) {
       return input.charAt(0).toUpperCase() + input.slice(1);
     }
-  }
+  };
 })
 .controller('MainCtrl', ['$scope', function($scope) {
   $scope.status = false;
@@ -21,16 +20,18 @@ angular.module('btScanner', [])
   $scope.deviceScan = false;
   $scope.deviceList = [];
   $scope.timeout = 20;
-  
-  
+  $scope.manifestData = chrome.runtime.getManifest();
+  $scope.socket = null;
+
+
   /**
    * Initialize tooltips
    */
   $scope.initTooltips = function() {
     $('[data-toggle="tooltip"]').tooltip();
-  }
-  
-  
+  };
+
+
   /**
    * Set the current bluetooth adapter
    *
@@ -41,6 +42,9 @@ angular.module('btScanner', [])
     $scope.$apply(function() {
       $scope.adapter = adapter;
     });
+
+    //Create a socket
+    chrome.bluetoothSocket.create($scope.createSocket);
   };
 
 
@@ -106,12 +110,49 @@ angular.module('btScanner', [])
    */
   $scope.addDevice = function(device) {
     console.log(device);
-    
+
     if( !device.old ) device.old = false;
-    
+
     $scope.$apply(function() {
       $scope.deviceList.push(device);
     });
+  };
+
+
+  $scope.connect = function(address, uuid) {
+    $scope.sockErrMessage = null;
+
+    if( $scope.socket ) {
+      if( !uuid ) uuid = '1105';
+      $scope.connecting = true;
+
+      console.log('Connecting...');
+
+      chrome.bluetoothSocket.connect($scope.socket.socketId,
+        address, uuid, function() {
+          if (chrome.runtime.lastError) {
+            $scope.connecting = false;
+            $scope.sockErrMessage = chrome.runtime.lastError.message;
+            console.error("Connection failed: " + chrome.runtime.lastError.message);
+          } else {
+            console.log('Connection succeeded!');
+          }
+          $scope.connecting = false;
+        });
+    } else {
+      $scope.sockErrMessage = '$scope.connect: No socket available!';
+    }
+  };
+
+
+  /**
+   * Create a socket
+   *
+   * @param {Object}
+   * @return {undefined}
+   */
+  $scope.createSocket = function(createInfo) {
+    if( createInfo ) $scope.socket = createInfo;
   };
 
 

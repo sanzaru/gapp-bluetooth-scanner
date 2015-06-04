@@ -1,7 +1,7 @@
 {
   "name": "Bluetooth Scanner",
   "description": "Simple scanner for bluetooth devices nearby.",
-  "version": "0.3",
+  "version": "0.3.1",
   "author": "Martin Albrecht",
   "manifest_version": 2,
   "app": {
@@ -9,7 +9,10 @@
       "scripts": ["background.js"]
     }
   },
-  "bluetooth": {},
+  "bluetooth": {
+    "low_energy": true,
+    "socket": true
+  },
   "icons": {
     "16": "Bluetooth-Icon-16.png",
     "48": "Bluetooth-Icon-48.png",
