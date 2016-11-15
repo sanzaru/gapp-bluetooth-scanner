@@ -14,6 +14,7 @@ angular.module('btScanner', [])
     }
   }
 })
+
 .controller('MainCtrl', ['$scope', function($scope) {
   $scope.status = false;
   $scope.adapter = null;
@@ -21,14 +22,16 @@ angular.module('btScanner', [])
   $scope.deviceScan = false;
   $scope.deviceList = [];
   $scope.timeout = 20;
-  
+
+  var userAgent = navigator.userAgent.toLowerCase();
+  $scope.osnotsupported = (userAgent.indexOf('linux') !== -1 && userAgent.indexOf('android') === -1);
   
   /**
    * Initialize tooltips
    */
   $scope.initTooltips = function() {
     $('[data-toggle="tooltip"]').tooltip();
-  }
+  };
   
   
   /**
@@ -55,7 +58,9 @@ angular.module('btScanner', [])
     $scope.showDeviceList = true;
     $scope.deviceScan = true;
     $scope.percentDone = 0;
+
     chrome.bluetooth.startDiscovery();
+
     chrome.bluetooth.getDevices(function(devices) {
       for(var i=0, len=devices.length; i<len; i++) {
         devices[i].old = true;
@@ -95,7 +100,7 @@ angular.module('btScanner', [])
     if( $scope.progressInterval ) {
       window.clearInterval($scope.progressInterval);
     }
-  }
+  };
   
 
   /**
@@ -105,12 +110,12 @@ angular.module('btScanner', [])
    * @return {undefined}
    */
   $scope.addDevice = function(device) {
-    console.log(device);
-    
     if( !device.old ) device.old = false;
     
     $scope.$apply(function() {
-      $scope.deviceList.push(device);
+      if( $scope.deviceList.indexOf(device) === -1 ) {
+        $scope.deviceList.push(device);
+      }
     });
   };
   
@@ -158,5 +163,5 @@ angular.module('btScanner', [])
    * @param {function}
    * @return {undefined}
    */
-  chrome.bluetooth.onDeviceAdded.addListener($scope.addDevice);
+  //chrome.bluetooth.onDeviceAdded.addListener($scope.addDevice);
 }]);

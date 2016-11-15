@@ -10,10 +10,15 @@
   <body ng-app="btScanner" ng-csp>
     <div ng-controller="MainCtrl" class="container">
       <div ng-if="adapter.powered === false" class="alert alert-danger text-center">
-        <span class="glyphicon glyphicon-alert"></span> Activate bluetooth to use this app.
+        <span class="glyphicon glyphicon-alert"></span> Activate your bluetooth adapter to use this app.
+      </div>
+
+      <div class="alert alert-danger text-center" ng-if="osnotsupported">
+        <span class="glyphicon glyphicon-alert"></span> This operating system is currently not supported for bluetooth
+        support in chrome.
       </div>
       
-      <div class="adapter-status panel panel-default" ng-if="adapter.powered">
+      <div class="adapter-status panel panel-default" ng-if="adapter.powered && !osnotsupported">
         <div class="panel-body">
           <span>{{adapter.name}} | {{adapter.address}} |</span>
           <span ng-if="adapter.powered" class="text-success">Powered</span>
@@ -36,7 +41,7 @@
         </div>
       </div>
       
-      <div ng-if="adapter.powered" id="deviceContainer">
+      <div ng-if="adapter.powered && !osnotsupported" id="deviceContainer">
         <div ng-if="deviceScan" id="scanPanel">
           <div class="text-center"><i class="fa fa-spinner fa-spin"></i> Scanning: {{percentDone}}%</div>
           <div class="progress clearfix">
@@ -48,7 +53,7 @@
         </div>
         
         <div class="panel panel-primary">
-          <div class="panel-heading">Devices found</div>
+          <div class="panel-heading">Devices found ({{deviceList.length}})</div>
           <div class="panel-body">
             <div ng-if="deviceList.length <= 0" class="text-center">
               No devices found
@@ -113,8 +118,7 @@
               </div>
               <div class="media-body">
                 <h4 class="media-heading">About</h4>
-                <p>Version: 0.0.1</p>
-                <p>Author: 0xC0FF33 martin.albrecht@javacoffee.de</p>
+                <p>Author: Martin Albrecht &lt;martin.albrecht@javacoffee.de&gt;</p>
               </div>
             </div>
           </div>
